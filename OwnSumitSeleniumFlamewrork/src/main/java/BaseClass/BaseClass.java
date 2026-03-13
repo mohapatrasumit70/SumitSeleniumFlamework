@@ -3,6 +3,8 @@ package BaseClass;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
@@ -74,8 +76,16 @@ public class BaseClass {
 
 			ChromeOptions options = new ChromeOptions();
 			options.addArguments("--disable-notifications");
-
-			driver.set(new ChromeDriver(options));
+//			options.addArguments("--headless"); // Run Chrome in headless mode
+//			options.addArguments("--disable-gpu"); // Disable GPU for headless mode
+			//options.addArguments("--window-size=1920,1080"); // Set window size
+//			options.addArguments("--no-sandbox"); // Required for some CI environments like Jenkins
+//			options.addArguments("--disable-dev-shm-usage"); // Resolve issues in resource-limited environments
+			Map<String, Object> prefs = new HashMap<>();
+			prefs.put("profile.default_content_setting_values.notifications", 1);
+			options.setExperimentalOption("prefs", prefs);
+            // this Is send my Krushna To Notification Off
+			driver.set(new ChromeDriver(options)); // Option Obj Passed Here
 
 			logger.info("ChromeDriver started");
 
@@ -85,7 +95,16 @@ public class BaseClass {
 
 			FirefoxOptions options = new FirefoxOptions();
 
-			driver.set(new FirefoxDriver(options));
+//			options.addArguments("--headless"); // Run Firefox in headless mode
+			options.addArguments("--disable-gpu"); // Disable GPU rendering (useful for headless mode)
+			options.addArguments("--width=1920"); // Set browser width
+			options.addArguments("--height=1080"); // Set browser height
+			options.addArguments("--disable-notifications"); // Disable browser notifications
+			options.addArguments("--no-sandbox"); // Needed for CI/CD environments
+			options.addArguments("--disable-dev-shm-usage"); // Prevent crashes in low-resource environments
+
+
+			driver.set(new FirefoxDriver(options)); // Option Obj Passed Here
 
 			logger.info("FirefoxDriver started");
 
@@ -94,8 +113,14 @@ public class BaseClass {
 		else if (browser.equalsIgnoreCase("edge")) {
 
 			EdgeOptions options = new EdgeOptions();
+//			options.addArguments("--headless"); // Run Edge in headless mode
+			options.addArguments("--disable-gpu"); // Disable GPU acceleration
+			options.addArguments("--window-size=1920,1080"); // Set window size
+			options.addArguments("--disable-notifications"); // Disable pop-up notifications
+			options.addArguments("--no-sandbox"); // Needed for CI/CD
+			options.addArguments("--disable-dev-shm-usage"); // Prevent resource-limited crashes
 
-			driver.set(new EdgeDriver(options));
+			driver.set(new EdgeDriver(options));  // Option Obj Passed Here
 
 			logger.info("EdgeDriver started");
 
